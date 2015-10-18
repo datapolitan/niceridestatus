@@ -16,6 +16,8 @@ from pgconnect import pgconnect
 
 from keys import keys
 
+prefix = '/home/ec2-user/niceridestatus/code/'
+
 def tweet_status(day):
     '''
     a function to tweet the input values
@@ -29,7 +31,7 @@ def tweet_status(day):
     #######
 
     ####Should add some length checking to tweet jik
-    photo = open(day + '.png', 'rb')
+    photo = open(prefix + day + '.png', 'rb')
     response = twitter.upload_media(media=photo)
     twitter.update_status(status='The past 24 hours of available #NiceRideMN bikes across #Minneapolis, #StPaul, #GoldenValley, #FalconHeights, & #FortSnelling', media_ids=[response['media_id']])
     return
@@ -42,7 +44,7 @@ def main():
     con = psycopg2.connect(database=db, user=user, host=host, port=5432)
     cur = con.cursor()
 
-    df = pd.read_sql_query(open("/home/ec2-user/niceridestatus/code/summary_stats.sql").read(),con,index_col='hour_ex')
+    df = pd.read_sql_query(open(prefix + "summary_stats.sql").read(),con,index_col='hour_ex')
     df.columns = ['Minneapolis','Saint Paul','Golden Valley/Falcon Heights/Fort Snelling']
 
     ax = df.plot(figsize=(10,5),title="Available NiceRide Bikes for Past 24 hours")
@@ -54,11 +56,11 @@ def main():
     lgd = ax.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5,-0.1))
     ax.grid('on')
     day = (datetime.datetime.now() - datetime.timedelta(days=1)).strftime('%Y%m%d')
-    plt.savefig(day + '.png', bbox_extra_artists=(lgd,), bbox_inches='tight')
+    plt.savefig(prefix + day + '.png', bbox_extra_artists=(lgd,), bbox_inches='tight')
     tweet_status(day)
 
     #remove file after tweeted
-    os.remove(day + '.png')
+    os.remove(prefix + day + '.png')
 
 if __name__ == "__main__":
     main()
