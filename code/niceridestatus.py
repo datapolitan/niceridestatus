@@ -2,6 +2,7 @@ import xmltodict
 import requests
 import collections
 import datetime
+import sys
 
 import psycopg2
 from pgconnect import pgconnect
@@ -76,7 +77,8 @@ def tweet_status(city_dict):
     try:
         twitter.update_status(status=status_text)
     except:
-        print "failed to tweet"
+        print "failed to tweet" 
+        print sys.exc_info()[0]
         pass
 
 def main():
