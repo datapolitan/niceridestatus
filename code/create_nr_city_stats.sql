@@ -10,3 +10,4 @@ CREATE TABLE niceride_mn.nr_city_stats (
 );
 
 COMMENT ON TABLE niceride_mn.nr_city_stats IS 'Values from each run of the niceridestatus.py';
+
