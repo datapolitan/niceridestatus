@@ -64,7 +64,6 @@ images/*
 *.sh
 *.qgs*
 *.kml
-select*
 *.lyr
 metadata
 keys.py

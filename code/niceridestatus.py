@@ -1,6 +1,7 @@
 import xmltodict
 import requests
 import collections
+import datetime
 
 import psycopg2
 from pgconnect import pgconnect
@@ -37,6 +38,7 @@ def get_nr_dock(id_city_dict):
     in_service_station_sum = 0
     #re-initialize the boro_dict to reset values
     city_dict = collections.defaultdict(int)
+    city_dict['execution_time'] = datetime.datetime.fromtimestamp(float(stations['stations']['@lastUpdate'])/1000)
     for station in stations['stations']['station']:
         if station['installed'] == 'true' and station['locked'] == 'false' and station['public'] == 'true':
             totalDocks_sum += int(station['nbBikes']) + int(station['nbEmptyDocks'])
@@ -54,10 +56,13 @@ def write_to_table(city_vals):
     sql = "INSERT INTO niceride_mn.nr_city_stats (execution_time, minneapolis, st_paul, falcon_heights, golden_valley, fort_snelling) VALUES (%s,%s,%s,%s,%s,%s)"
     cur.execute(sql,tuple(city_vals))
     con.commit()
+    con.close()
+    return
 
 def tweet_status(city_dict):
     #insert values into table 
-    write_to_table([city_dict['Minneapolis'],city_dict['Saint Paul'],city_dict['Falcon Heights'], city_dict['Golden Valley'], city_dict['Fort Snelling']])
+    write_to_table([city_dict['execution_time'],city_dict['Minneapolis'],city_dict['Saint Paul'],city_dict['Falcon Heights'], city_dict['Golden Valley'], city_dict['Fort Snelling']])
+
     #prep for tweet
     other = city_dict['Falcon Heights'] + city_dict['Golden Valley'] + city_dict['Fort Snelling']
     CONSUMER_KEY = keys['consumer_key']
@@ -67,9 +72,12 @@ def tweet_status(city_dict):
     twitter = twython.Twython(CONSUMER_KEY,CONSUMER_SECRET,ACCESS_TOKEN,ACCESS_TOKEN_SECRET)
     
     status_text = "There are %s #NiceRideMN bikes avail in #Minneapolis, %s in #StPaul, and %s in #GoldenValley, #FalconHeights, & #FortSnelling" % ("{:,.0f}".format(city_dict['Minneapolis']),"{:,.0f}".format(city_dict['Saint Paul']),"{:,.0f}".format(other))
-#    print status_text % ("{:,.0f}".format(city_dict['Minneapolis']),"{:,.0f}".format(city_dict['Saint Paul']),"{:,.0f}".format(other))
-
-    twitter.update_status(status=status_text)
+    
+    try:
+        twitter.update_status(status=status_text)
+    except:
+        print "failed to tweet"
+        pass
 
 def main():
     # id_city_dict = collections.defaultdict(str)

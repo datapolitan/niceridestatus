@@ -30,7 +30,7 @@ con.commit()
 sql = "INSERT INTO niceride_mn.id_loc(id,geom,created_at) VALUES (%s,ST_SetSRID(ST_MakePoint(%s,%s),4326),%s)"
 for station in stations['stations']['station']:
     now = datetime.datetime.now()
-    cur.execute(sql,(station['id'], station['lat'],station['long'],now))
+    cur.execute(sql,(station['id'], station['long'],station['lat'],now))
 con.commit()
 
 con.close()
