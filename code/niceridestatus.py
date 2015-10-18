@@ -21,7 +21,7 @@ def get_id_city():
     icd = collections.defaultdict(str)
     con = psycopg2.connect(database=db, user=user, host=host, port=5432)
     cur = con.cursor()
-    cur.execute(open("/home/ec2-user/niceridestatus/select_id_city.sql").read())
+    cur.execute(open("/home/ec2-user/niceridestatus/code/select_id_city.sql").read())
     q = cur.fetchall()
     for row in q:
         icd[str(row[0])] = row[1]
