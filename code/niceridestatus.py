@@ -21,7 +21,7 @@ def get_id_city():
     icd = collections.defaultdict(str)
     con = psycopg2.connect(database=db, user=user, host=host, port=5432)
     cur = con.cursor()
-    cur.execute(open("select_id_city.sql").read())
+    cur.execute(open("/home/ec2-user/niceridestatus/select_id_city.sql").read())
     q = cur.fetchall()
     for row in q:
         icd[str(row[0])] = row[1]
@@ -72,7 +72,7 @@ def tweet_status(city_dict):
     twitter = twython.Twython(CONSUMER_KEY,CONSUMER_SECRET,ACCESS_TOKEN,ACCESS_TOKEN_SECRET)
     
     status_text = "There are %s #NiceRideMN bikes avail in #Minneapolis, %s in #StPaul, and %s in #GoldenValley, #FalconHeights, & #FortSnelling" % ("{:,.0f}".format(city_dict['Minneapolis']),"{:,.0f}".format(city_dict['Saint Paul']),"{:,.0f}".format(other))
-    
+
     try:
         twitter.update_status(status=status_text)
     except:
