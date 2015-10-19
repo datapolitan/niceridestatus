@@ -7,7 +7,7 @@ import sys
 import psycopg2
 from pgconnect import pgconnect
 
-import twython
+from twython import Twython, TwythonError
 from keys import keys
 
 db = pgconnect['db']
@@ -76,9 +76,9 @@ def tweet_status(city_dict):
 
     try:
         twitter.update_status(status=status_text)
-    except:
+    except TwythonError as e:
         print "failed to tweet" 
-        print sys.exc_info()[0]
+        print e
         pass
 
 def main():
