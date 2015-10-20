@@ -33,7 +33,7 @@ def tweet_status(day):
     ####Should add some length checking to tweet jik
     photo = open(prefix + day + '.png', 'rb')
     response = twitter.upload_media(media=photo)
-    twitter.update_status(status='The past 24 hours of available #NiceRideMN bikes across #Minneapolis, #StPaul, #GoldenValley, #FalconHeights, & #FortSnelling', media_ids=[response['media_id']])
+    twitter.update_status(status='The past 24 hours of available #NiceRideMN bikes', media_ids=[response['media_id']])
     return
 
 def main():
