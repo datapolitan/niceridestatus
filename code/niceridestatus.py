@@ -74,7 +74,7 @@ def tweet_status(city_dict):
 
     status_text = ''
 
-    now = int(datetime.datetime.now().strftime('%H'))
+    now = int(datetime.datetime.now().strftime('%M')[0])
     if now % 2 == 0:
         status_text = "There are %s #NiceRideMN bikes avail in #Minneapolis, %s in #StPaul, and %s in #GoldenValley, #FalconHeights, & #FortSnelling" % ("{:,.0f}".format(city_dict['Minneapolis']),"{:,.0f}".format(city_dict['Saint Paul']),"{:,.0f}".format(other))
     else:
