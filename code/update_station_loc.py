@@ -24,7 +24,7 @@ con = psycopg2.connect(database=db, user=user, host=host, port=5432)
 cur = con.cursor()
 
 #drop table and recreate 
-cur.execute(open("~/niceridestatus/code/create_id_loc.sql").read())
+cur.execute(open("/home/ec2-user/niceridestatus/code/create_id_loc.sql").read())
 con.commit()
 
 sql = "INSERT INTO niceride_mn.id_loc(id,geom,created_at) VALUES (%s,ST_SetSRID(ST_MakePoint(%s,%s),4326),%s)"
