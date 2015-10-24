@@ -48,10 +48,11 @@ def get_nr_dock(id_city_dict):
             city_dict[id_city_dict[station['id']]] += int(station['nbBikes'])
 #    return city_dict
 
-    ###### publish tweet
-    tweet_status(city_dict)
+    ###### write data to database
+    write_to_table(city_dict)
 
-def write_to_table(city_vals):
+def write_to_table(city_dict):
+    city_vals = [city_dict['execution_time'],city_dict['Minneapolis'],city_dict['Saint Paul'],city_dict['Falcon Heights'], city_dict['Golden Valley'], city_dict['Fort Snelling']]
     con = psycopg2.connect(database=db, user=user, host=host, port=5432)
     cur = con.cursor()
     sql = "INSERT INTO niceride_mn.nr_city_stats (execution_time, minneapolis, st_paul, falcon_heights, golden_valley, fort_snelling) VALUES (%s,%s,%s,%s,%s,%s)"
@@ -60,32 +61,32 @@ def write_to_table(city_vals):
     con.close()
     return
 
-def tweet_status(city_dict):
-    #insert values into table 
-    write_to_table([city_dict['execution_time'],city_dict['Minneapolis'],city_dict['Saint Paul'],city_dict['Falcon Heights'], city_dict['Golden Valley'], city_dict['Fort Snelling']])
+# def tweet_status(city_dict):
+#     #insert values into table 
+#     write_to_table([city_dict['execution_time'],city_dict['Minneapolis'],city_dict['Saint Paul'],city_dict['Falcon Heights'], city_dict['Golden Valley'], city_dict['Fort Snelling']])
 
-    #prep for tweet
-    other = city_dict['Falcon Heights'] + city_dict['Golden Valley'] + city_dict['Fort Snelling']
-    CONSUMER_KEY = keys['consumer_key']
-    CONSUMER_SECRET = keys['consumer_secret']
-    ACCESS_TOKEN = keys['access_token']
-    ACCESS_TOKEN_SECRET = keys['access_token_secret']
-    twitter = Twython(CONSUMER_KEY,CONSUMER_SECRET,ACCESS_TOKEN,ACCESS_TOKEN_SECRET)
+#     #prep for tweet
+#     other = city_dict['Falcon Heights'] + city_dict['Golden Valley'] + city_dict['Fort Snelling']
+#     CONSUMER_KEY = keys['consumer_key']
+#     CONSUMER_SECRET = keys['consumer_secret']
+#     ACCESS_TOKEN = keys['access_token']
+#     ACCESS_TOKEN_SECRET = keys['access_token_secret']
+#     twitter = Twython(CONSUMER_KEY,CONSUMER_SECRET,ACCESS_TOKEN,ACCESS_TOKEN_SECRET)
 
-    status_text = ''
+#     status_text = ''
 
-    now = int(datetime.datetime.now().strftime('%M')[0])
-    if now % 2 == 0:
-        status_text = "There are %s #NiceRideMN bikes avail in #Minneapolis, %s in #StPaul, and %s in #GoldenValley, #FalconHeights, & #FortSnelling" % ("{:,.0f}".format(city_dict['Minneapolis']),"{:,.0f}".format(city_dict['Saint Paul']),"{:,.0f}".format(other))
-    else:
-        status_text = "There are %s #NiceRideMN bikes avail in #Minneapolis, %s in #StPaul, and %s in #GoldenValley, #FalconHeights, & #FortSnelling." % ("{:,.0f}".format(city_dict['Minneapolis']),"{:,.0f}".format(city_dict['Saint Paul']),"{:,.0f}".format(other))
+#     now = int(datetime.datetime.now().strftime('%M')[0])
+#     if now % 2 == 0:
+#         status_text = "There are %s #NiceRideMN bikes avail in #Minneapolis, %s in #StPaul, and %s in #GoldenValley, #FalconHeights, & #FortSnelling" % ("{:,.0f}".format(city_dict['Minneapolis']),"{:,.0f}".format(city_dict['Saint Paul']),"{:,.0f}".format(other))
+#     else:
+#         status_text = "There are %s #NiceRideMN bikes avail in #Minneapolis, %s in #StPaul, and %s in #GoldenValley, #FalconHeights, & #FortSnelling." % ("{:,.0f}".format(city_dict['Minneapolis']),"{:,.0f}".format(city_dict['Saint Paul']),"{:,.0f}".format(other))
 
-    try:
-        twitter.update_status(status=status_text)
-    except TwythonError as e:
-        print "failed to tweet" 
-        print e
-        pass
+#     try:
+#         twitter.update_status(status=status_text)
+#     except TwythonError as e:
+#         print "failed to tweet" 
+#         print e
+#         pass
 
 def main():
     # id_city_dict = collections.defaultdict(str)
