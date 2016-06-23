@@ -25,11 +25,11 @@ def tweet_status():
     con = psycopg2.connect(database=db, user=user, host=host, port=5432)
     cur = con.cursor()
 
-    cur.execute(open("~/niceridestatus/code/select_hour_stats.sql").read())
+    cur.execute(open("/home/ec2-user/niceridestatus/code/select_hour_stats.sql").read())
     q = cur.fetchall()
     r_list = []
-    for row in q:
-        r_list.append(row[0])
+    for el in q[0]:
+        r_list.append(el)
 
     status_text = "In the past hour, there were an avg %s #NiceRideMN bikes avail in #Minneapolis, %s in #StPaul, and %s elsewhere" % ("{:,.0f}".format(r_list[0]), "{:,.0f}".format(r_list[1]), "{:,.0f}".format(r_list[2]))
 
