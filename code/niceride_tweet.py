@@ -25,7 +25,7 @@ def tweet_status():
     con = psycopg2.connect(database=db, user=user, host=host, port=5432)
     cur = con.cursor()
 
-    cur.execute(open("~/niceridestatus/code/select_hour_stats.sql").read())
+    cur.execute(open("/home/ec2-user/niceridestatus/code/select_hour_stats.sql").read())
     q = cur.fetchall()
     r_list = []
     for row in q:
