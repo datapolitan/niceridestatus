@@ -34,8 +34,8 @@ def tweet_status():
     status_text = "In the past hour, there were an avg %s #NiceRideMN bikes avail in #Minneapolis, %s in #StPaul, and %s elsewhere" % ("{:,.0f}".format(r_list[0]), "{:,.0f}".format(r_list[1]), "{:,.0f}".format(r_list[2]))
 
     try:
-        print status_text
-        # twitter.update_status(status=status_text)
+        # print status_text
+        twitter.update_status(status=status_text)
     except TwythonError as e:
         print "failed to tweet"
         print e
